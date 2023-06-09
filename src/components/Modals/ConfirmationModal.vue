@@ -76,7 +76,7 @@ export default {
 
   methods: {
     close() {
-      this.isOpen = false;
+      this.$emit("close");
     },
 
     confirm() {
