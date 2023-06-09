@@ -2,8 +2,13 @@
   <v-container>
     <v-card>
       <v-row class="pl-4">
-        <v-col cols="12">
+        <v-col cols="3">
           <h1>Eventos</h1>
+        </v-col>
+        <v-col cols="9" align-self="center">
+          <v-btn color="green" to="/create">
+            <span class="ml-2">Cadastrar novo</span>
+          </v-btn>
         </v-col>
       </v-row>
       <v-card class="ml-3 mt-3 mr-3 mb-3">
@@ -62,7 +67,7 @@
             <v-col cols="3">
               <v-text-field
                 v-model="search"
-                label="Buscar"
+                label="Pesquisar"
                 append-icon="mdi-magnify"
                 outlined
                 dense
@@ -101,7 +106,7 @@
                 {{ calculateDuration(event.start_event, event.end_event) }} dias
               </v-col>
               <v-col cols="1" class="pl-2 pt-4">
-                <v-btn color="primary" text>
+                <v-btn color="primary" text to="/create">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </v-col>
