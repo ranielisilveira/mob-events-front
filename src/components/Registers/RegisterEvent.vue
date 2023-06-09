@@ -33,7 +33,6 @@
           :min="minDate"
         ></v-date-picker>
       </v-menu>
-      <!-- :error-messages="getErrorsDate(event)" -->
     </v-col>
     <v-col md="6" sm="12" xs="12" offset-md="3">
       <v-menu
@@ -107,10 +106,11 @@ export default {
   computed: {
     isFilled() {
       return (
-        this.event.name &&
-        this.event.start_event &&
-        this.event.end_event &&
-        moment(this.event.end_event).isAfter(this.event.start_event)
+        (this.event.name &&
+          this.event.start_event &&
+          this.event.end_event &&
+          moment(this.event.end_event).isAfter(this.event.start_event)) ||
+        moment(this.event.end_event).isSame(this.event.start_event)
       );
     },
 

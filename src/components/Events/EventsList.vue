@@ -106,7 +106,7 @@
                 {{ calculateDuration(event.start_event, event.end_event) }} dias
               </v-col>
               <v-col cols="1" class="pl-2 pt-4">
-                <v-btn color="primary" text to="/create">
+                <v-btn color="primary" text @click="editEvent(event)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </v-col>
@@ -125,6 +125,7 @@
       :dialog="deleteModal"
       :title-modal="'Deletar participante'"
       :text-description-modal="'Deseja realmente deletar este evento? Essa ação não poderá ser desfeita.'"
+      @confirm="deleteEvent"
     ></confirmation-modal>
   </v-container>
 </template>
@@ -167,11 +168,6 @@ export default {
       }
     },
 
-    computedDateFormattedMomentjs(date) {
-      const dateFormated = moment(date).format("DD/MM/YYYY");
-      return dateFormated;
-    },
-
     calculateDuration(start, end) {
       const startEvent = moment(start);
       const endEvent = moment(end);
@@ -183,6 +179,29 @@ export default {
     formatedDate(date) {
       const dateFormated = moment(date).format("DD/MM/YYYY");
       return dateFormated;
+    },
+
+    // FIXME: Action and route not solicited in the test
+    editEvent() {
+      alert(
+        "Action not solicited in the test!, You will be redirected but it will not be the id of the event that will be passed"
+      );
+      this.$router.push({ name: "registers" });
+    },
+
+    // FIXME: Action not solicited in the test
+    async deleteEvent() {
+      alert("Action not solicited in the test!");
+      this.deleteModal = false;
+      this.getEvents();
+      // try {
+      //   await this.$axios.delete(`events/${this.event.id}`);
+      //   this.deleteModal = false;
+      //   this.getEvents();
+      // } catch (error) {
+      //   this.getEvents();
+      //   console.error(error);
+      // }
     },
   },
 };

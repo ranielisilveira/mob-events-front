@@ -13,7 +13,7 @@
       </v-toolbar>
       <v-card-text class="grey lighten-5">
         <v-row no-gutters class="pt-5">
-          <v-col md="6" sm="12" xs="12" offset-md="3">
+          <v-col cols="12">
             {{ textDescriptionModal }}
           </v-col>
         </v-row>
