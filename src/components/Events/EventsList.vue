@@ -6,7 +6,7 @@
           <h1>Eventos</h1>
         </v-col>
         <v-col cols="9" align-self="center">
-          <v-btn color="green" to="/create">
+          <v-btn class="white--text text-none" color="green" to="/create">
             <span class="ml-2">Cadastrar novo</span>
           </v-btn>
         </v-col>
@@ -94,7 +94,7 @@
           <div v-for="event in events" :key="event.id">
             <v-row no-gutters class="item-text">
               <v-col cols="5" class="pl-4 pt-4">
-                {{ event.title }}
+                {{ event.name }}
               </v-col>
               <v-col cols="2" class="pl-5 pt-4">
                 {{ formatedDate(event.start_event) }}
@@ -111,7 +111,7 @@
                 </v-btn>
               </v-col>
               <v-col cols="1" class="pl-3 pt-4">
-                <v-btn color="error" text>
+                <v-btn color="error" text @click="openDeleteModal">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-col>
@@ -121,88 +121,52 @@
         </v-container>
       </v-row>
     </v-card>
+    <confirmation-modal
+      :dialog="deleteModal"
+      :title-modal="'Deletar participante'"
+      :text-description-modal="'Deseja realmente deletar este evento? Essa ação não poderá ser desfeita.'"
+    ></confirmation-modal>
   </v-container>
 </template>
 
 <script>
 import moment from "moment";
+import ConfirmationModal from "@/components/Modals/ConfirmationModal.vue";
 export default {
   name: "EventsList",
 
   data() {
     return {
-      events: [
-        {
-          id: 1,
-          title: "Evento 1",
-          start_event: "2021-08-01 00:00:00",
-          end_event: "2021-08-03 00:00:00",
-        },
-        {
-          id: 2,
-          title: "Evento 2",
-          start_event: "2021-07-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 3,
-          title: "Evento 3",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 4,
-          title: "Evento 4",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 5,
-          title: "Evento 5",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 6,
-          title: "Evento 6",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 7,
-          title: "Evento 7",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 8,
-          title: "Evento 8",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 9,
-          title: "Evento 9",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 10,
-          title: "Evento 10",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 11,
-          title: "Evento 11",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-      ],
+      deleteModal: false,
+      events: [],
+      search: "",
+      menu1: false,
+      date: null,
     };
   },
 
+  components: {
+    ConfirmationModal,
+  },
+
+  created() {
+    this.getEvents();
+  },
+
   methods: {
+    openDeleteModal() {
+      this.deleteModal = true;
+    },
+
+    async getEvents() {
+      try {
+        const response = await this.$axios.get("events");
+        this.events = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     computedDateFormattedMomentjs(date) {
       const dateFormated = moment(date).format("DD/MM/YYYY");
       return dateFormated;
