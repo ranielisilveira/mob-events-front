@@ -1,21 +1,27 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from "vue";
+import VueRouter from "vue-router";
 import EventsView from "../views/EventsView.vue";
+import RegisterView from "../views/RegisterView.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'events',
-    component: EventsView
+    path: "/",
+    name: "events",
+    component: EventsView,
   },
-]
+  {
+    path: "/create",
+    name: "registers",
+    component: RegisterView,
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
