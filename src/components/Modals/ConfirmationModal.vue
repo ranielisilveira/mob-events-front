@@ -5,7 +5,7 @@
     </template>
     <v-card>
       <v-toolbar flat>
-        <v-toolbar-title>Deletar participante</v-toolbar-title>
+        <v-toolbar-title>{{ titleModal }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn icon color="gray" @click="close" right>
           <v-icon>mdi-close</v-icon>
@@ -14,18 +14,22 @@
       <v-card-text class="grey lighten-5">
         <v-row no-gutters class="pt-5">
           <v-col md="6" sm="12" xs="12" offset-md="3">
-            Você deseja mesmo deletar o participante?
+            {{ textDescriptionModal }}
           </v-col>
         </v-row>
       </v-card-text>
 
       <v-card-actions>
         <v-btn class="black--text text-none" color="gray" button @click="close"
-          >Cancelar
+          >Não
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn class="white--text text-none" color="red" button @click="confirm"
-          >Deletar</v-btn
+        <v-btn
+          class="white--text text-none"
+          color="green"
+          button
+          @click="confirm"
+          >Sim</v-btn
         >
       </v-card-actions>
     </v-card>
@@ -34,7 +38,7 @@
 
 <script>
 export default {
-  name: "DeleteModal",
+  name: "ConfirmationModal",
   data() {
     return {
       isOpen: false,
@@ -45,6 +49,16 @@ export default {
     dialog: {
       type: Boolean,
       default: false,
+    },
+
+    titleModal: {
+      type: String,
+      default: "",
+    },
+
+    textDescriptionModal: {
+      type: String,
+      default: "",
     },
   },
 
@@ -63,6 +77,11 @@ export default {
   methods: {
     close() {
       this.isOpen = false;
+    },
+
+    confirm() {
+      this.$emit("confirm");
+      this.close();
     },
   },
 };
