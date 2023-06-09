@@ -5,7 +5,7 @@
         <v-btn
           class="white--text text-none"
           color="green"
-          @click="openRegisterOrEditParticipantModal"
+          @click="openRegisterOrEditParticipantModal('create')"
         >
           <span>Adicionar participante</span>
         </v-btn>
@@ -20,25 +20,25 @@
       <v-col cols="1" class="fixture-names pl-4 pt-2">Excluir</v-col>
       <v-col cols="1" class="fixture-names pl-4 pt-2">Adc. Presença</v-col>
     </v-row>
-    <div v-for="event in events" :key="event.id">
+    <div v-for="participant in participants" :key="participant.id">
       <v-row no-gutters class="item-text">
         <v-col cols="3" class="pl-4 pt-4">
-          {{ event.title }}
+          {{ participant.name }}
         </v-col>
         <v-col cols="2" class="pl-5 pt-4">
-          {{ formatedDate(event.start_event) }}
+          {{ participant.cpf }}
         </v-col>
         <v-col cols="2" class="pl-5 pt-4">
-          {{ formatedDate(event.end_event) }}
+          {{ participant.email }}
         </v-col>
         <v-col cols="2" class="pl-5 pt-4">
-          {{ calculateDuration(event.start_event, event.end_event) }} dias
+          {{ participant.event }}
         </v-col>
         <v-col cols="1" class="pl-2 pt-4">
           <v-btn
             color="primary"
             text
-            @click="openRegisterOrEditParticipantModal"
+            @click="openRegisterOrEditParticipantModal('edit')"
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
@@ -49,23 +49,32 @@
           </v-btn>
         </v-col>
         <v-col cols="1" class="pl-3 pt-4">
-          <v-btn color="green" text @click="openRegisterAttendanceModal">
+          <v-btn
+            color="green"
+            text
+            @click="openRegisterAttendanceModal(participant)"
+          >
             <v-icon>mdi-check</v-icon>
           </v-btn>
         </v-col>
+        <v-divider color="grey" class="divider-point"></v-divider>
       </v-row>
-      <v-divider color="grey" class="divider-point"></v-divider>
     </div>
     <register-participant-modal
       :dialog="registerOrEditParticipantModal"
+      @update="getParticipants"
+      @close="registerOrEditParticipantModal = false"
     ></register-participant-modal>
     <register-attendance-modal
       :dialog="registerAttendanceModal"
+      :participant="participant"
+      @close="registerAttendanceModal = false"
     ></register-attendance-modal>
     <confirmation-modal
       :dialog="deleteModal"
       :title-modal="'Deletar participante'"
       :text-description-modal="'Deseja realmente deletar o participante? Essa ação não poderá ser desfeita.'"
+      @close="deleteModal = false"
     ></confirmation-modal>
   </div>
 </template>
@@ -83,74 +92,8 @@ export default {
       registerOrEditParticipantModal: false,
       registerAttendanceModal: false,
       deleteModal: false,
-      events: [
-        {
-          id: 1,
-          title: "Evento 1",
-          start_event: "2021-08-01 00:00:00",
-          end_event: "2021-08-03 00:00:00",
-        },
-        {
-          id: 2,
-          title: "Evento 2",
-          start_event: "2021-07-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 3,
-          title: "Evento 3",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 4,
-          title: "Evento 4",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 5,
-          title: "Evento 5",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 6,
-          title: "Evento 6",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 7,
-          title: "Evento 7",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 8,
-          title: "Evento 8",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 9,
-          title: "Evento 9",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 10,
-          title: "Evento 10",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-        {
-          id: 11,
-          title: "Evento 11",
-          start_event: "2021-08-01",
-          end_event: "2021-08-01",
-        },
-      ],
+      participants: [],
+      participant: {},
     };
   },
 
@@ -160,22 +103,47 @@ export default {
     ConfirmationModal,
   },
 
+  created() {
+    this.getParticipants();
+  },
+
+  computed: {
+    evendId() {
+      return this.$route.query && this.$route.query.event_id;
+    },
+  },
+
   methods: {
-    openRegisterOrEditParticipantModal() {
+    async getParticipants() {
+      console.log(this.$route.query.event_id);
+      try {
+        const response = await this.$axios.get(
+          "/participants/" + "?event_id=" + this.$route.query.event_id
+        );
+        this.participants = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    openRegisterOrEditParticipantModal(action) {
+      if (action === "edit") {
+        // FIXME: Action not solicited in the test
+        alert(
+          "Unsolicited action on test!, the edit modal will open, but it will not be possible to edit."
+        );
+      }
+
       this.registerOrEditParticipantModal = true;
     },
 
-    openRegisterAttendanceModal() {
+    openRegisterAttendanceModal(participant) {
+      this.participant = participant;
       this.registerAttendanceModal = true;
     },
 
     openDeleteModal() {
       this.deleteModal = true;
-    },
-
-    computedDateFormattedMomentjs(date) {
-      const dateFormated = moment(date).format("DD/MM/YYYY");
-      return dateFormated;
     },
 
     calculateDuration(start, end) {
