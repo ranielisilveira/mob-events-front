@@ -3,6 +3,11 @@
     <v-card>
       <v-row class="pl-4">
         <v-col cols="12">
+          <v-fab-transition>
+            <v-btn bottom top color="blue" to="/">
+              <v-icon> mdi-home-circle </v-icon>
+            </v-btn>
+          </v-fab-transition>
           <h1>Detalhes do Evento</h1>
         </v-col>
       </v-row>
