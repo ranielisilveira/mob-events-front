@@ -106,7 +106,7 @@
                 {{ calculateDuration(event.start_event, event.end_event) }} dias
               </v-col>
               <v-col cols="1" class="pl-2 pt-4">
-                <v-btn color="primary" text @click="editEvent(event)">
+                <v-btn color="primary" text @click="editEvent(event.id)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </v-col>
@@ -126,6 +126,7 @@
       :title-modal="'Deletar participante'"
       :text-description-modal="'Deseja realmente deletar este evento? Essa ação não poderá ser desfeita.'"
       @confirm="deleteEvent"
+      @close="deleteModal = false"
     ></confirmation-modal>
   </v-container>
 </template>
@@ -181,12 +182,11 @@ export default {
       return dateFormated;
     },
 
-    // FIXME: Action and route not solicited in the test
-    editEvent() {
+    editEvent(event_id) {
       alert(
         "Action not solicited in the test!, You will be redirected but it will not be the id of the event that will be passed"
       );
-      this.$router.push({ name: "registers" });
+      this.$router.push({ name: "registers", query: { event_id } });
     },
 
     // FIXME: Action not solicited in the test
