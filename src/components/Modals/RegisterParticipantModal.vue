@@ -20,8 +20,9 @@
           <v-row no-gutters class="pt-5">
             <v-col md="6" sm="12" xs="12" offset-md="3">
               <v-text-field
-                label="Nome"
-                placeholder="Nome: *"
+                v-model="participant.name"
+                label="Nome *"
+                placeholder="Nome:"
                 outlined
               ></v-text-field>
             </v-col>
@@ -29,8 +30,9 @@
           <v-row no-gutters class="pt-5">
             <v-col md="6" sm="12" xs="12" offset-md="3">
               <v-text-field
-                label="CPF"
-                placeholder="CPF *"
+                v-model="participant.cpf"
+                label="CPF *"
+                placeholder="CPF"
                 outlined
               ></v-text-field
             ></v-col>
@@ -38,20 +40,28 @@
           <v-row no-gutters class="pt-5">
             <v-col md="6" sm="12" xs="12" offset-md="3">
               <v-text-field
-                label="E-mail"
-                placeholder="E-mail *"
+                v-model="participant.email"
+                label="E-mail *"
+                placeholder="E-mail"
                 outlined
               ></v-text-field>
             </v-col>
           </v-row>
         </v-form>
       </v-card-text>
-
       <v-card-actions>
         <v-col md="6" sm="12" xs="12" offset-md="5" offset-sm="4">
-          <v-btn class="white--text text-none" @click="register" :loading="saving" :disabled="!formValid">{{
-            participant.id ? "Editar" : "Salvar"
-          }}</v-btn>
+          <v-snackbar v-model="snackbar.show" :timeout="3000">
+            {{ snackbar.message }}
+          </v-snackbar>
+
+          <v-btn
+            :disabled="!isFilled"
+            class="white--text text-none"
+            color="green"
+            @click="register"
+            >{{ participant && participant.id ? "Editar" : "Salvar" }}</v-btn
+          >
         </v-col>
       </v-card-actions>
     </v-card>
@@ -64,9 +74,19 @@ export default {
   data() {
     return {
       isOpen: false,
-      participant: {},
       saving: false,
       formValid: false,
+      participant: {
+        name: "",
+        cpf: "",
+        email: "",
+        event_id: "",
+      },
+      snackbar: {
+        show: false,
+        color: "",
+        message: "default",
+      },
     };
   },
 
@@ -89,9 +109,48 @@ export default {
     },
   },
 
+  computed: {
+    isFilled() {
+      return (
+        this.participant.name &&
+        this.participant.cpf.length == 11 &&
+        this.participant.email
+      );
+    },
+
+    eventId() {
+      return this.$route.query.event_id;
+    },
+  },
+
   methods: {
+    messsageSuccess() {
+      this.snackbar.show = true;
+      this.snackbar.color = "success";
+      this.snackbar.message = "Participante cadastrado com sucesso!";
+    },
+
     close() {
-      this.isOpen = false;
+      this.$emit("close");
+    },
+
+    async register() {
+      console.log(this.participant);
+      console.log(this.eventId);
+      this.participant.event_id = this.eventId;
+      try {
+        await this.$axios.post("/participants", this.participant);
+        this.participant = {
+          name: "",
+          cpf: "",
+          email: "",
+        };
+        this.messsageSuccess();
+        this.$emit("update");
+        this.close();
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };
