@@ -62,7 +62,11 @@
     <register-attendance-modal
       :dialog="registerAttendanceModal"
     ></register-attendance-modal>
-    <delete-modal :dialog="deleteModal"></delete-modal>
+    <confirmation-modal
+      :dialog="deleteModal"
+      :title-modal="'Deletar participante'"
+      :text-description-modal="'Deseja realmente deletar o participante? Essa ação não poderá ser desfeita.'"
+    ></confirmation-modal>
   </div>
 </template>
 
@@ -70,7 +74,7 @@
 import moment from "moment";
 import RegisterParticipantModal from "@/components/Modals/RegisterParticipantModal.vue";
 import RegisterAttendanceModal from "@/components/Modals/RegisterAttendanceModal.vue";
-import DeleteModal from "@/components/Modals/DeleteModal.vue";
+import ConfirmationModal from "@/components/Modals/ConfirmationModal.vue";
 export default {
   name: "ParticipantList",
 
@@ -153,7 +157,7 @@ export default {
   components: {
     RegisterParticipantModal,
     RegisterAttendanceModal,
-    DeleteModal,
+    ConfirmationModal,
   },
 
   methods: {
